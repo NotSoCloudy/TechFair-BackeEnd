@@ -1,6 +1,8 @@
 package com.ford.cpp.service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +20,7 @@ public class ChargingService {
 	@Autowired
 	private SlackClient slackClient;
 	
-	public List<ChargingStation> getStations()
+	public List<ChargingStation> getStations(String city)
 	{
 //		ChargingStation station = new ChargingStation();
 //		station.setId(new Long(1));
@@ -27,9 +29,13 @@ public class ChargingService {
 //		station.setLatitude(3.7);
 //		station.setStatus(true);
 //		repo.save(station);
-		
+		if(city.equalsIgnoreCase("all"))
 		return repo.findAll();
-		
+		else
+		{
+			List<ChargingStation> stationList = repo.findAllByCity(city).orElse(Collections.EMPTY_LIST);
+			return stationList;
+		}
 	}
 	
 	public void createStations(List<ChargingStation> list)
@@ -39,6 +45,8 @@ public class ChargingService {
 	
 	public void updateStatus(ChargingStation station)
 	{
+		ChargingStation stn= repo.findById(station.getId()).orElse(new ChargingStation());
+		station.setUsageCounter(stn.getUsageCounter()+1);
 		repo.save(station);
 		if(station.isStatus())
 		{

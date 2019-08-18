@@ -11,8 +11,8 @@ import org.springframework.web.client.RestTemplate;
 @Component
 public class SlackClient {
 	
-	public static final String url = "https://hooks.slack.com/services/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";
-	public static final String token = "xoxp-701810534883-701810536403-713116196900-e5f21b76ae14891240c41df590527649";
+	public static final String url = "https://hooks.slack.com/services/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";
+	public static final String token = "xoxp-701941766275-706995135489-712871617140-93c6fe935a3ea40177d6d687bcc1a0c4";
 	
 	
 	public void postMessage(String msg)

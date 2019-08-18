@@ -21,4 +21,8 @@ public class ChargingStationContract {
 		
 		private double longitude;
 		
+		private int usageCounter;
+		
+		private String city;
+		
 }

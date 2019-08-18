@@ -18,13 +18,15 @@ public class StationTransformer {
 		List<ChargingStationContract> responseList = new ArrayList<ChargingStationContract>();
 		for(ChargingStation station: stationList)
 		{
-			ChargingStationContract responseL = new ChargingStationContract();
-			responseL.setId(station.getId());
-			responseL.setName(station.getName());
-			responseL.setLatitude(station.getLatitude());
-			responseL.setLongitude(station.getLongitude());
-			responseL.setStatus(station.isStatus());
-			responseList.add(responseL);
+			ChargingStationContract response = new ChargingStationContract();
+			response.setId(station.getId());
+			response.setName(station.getName());
+			response.setLatitude(station.getLatitude());
+			response.setLongitude(station.getLongitude());
+			response.setStatus(station.isStatus());
+			response.setUsageCounter(station.getUsageCounter());
+			response.setCity(station.getCity());
+			responseList.add(response);
 		}
 		 return responseList;
 	}
@@ -48,6 +50,7 @@ public class StationTransformer {
 			entity.setLatitude(station.getLatitude());
 			entity.setLongitude(station.getLongitude());
 			entity.setStatus(station.isStatus());
+			entity.setCity(station.getCity());
 			return entity;
 	}
 }

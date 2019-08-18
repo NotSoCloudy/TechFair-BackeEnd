@@ -22,4 +22,10 @@ public class ChargingStation
 	private double latitude;
 	
 	private double longitude;
+	
+	private int usageCounter;
+	
+	private String city;
+	
+	private String vin;
 }
