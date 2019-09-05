@@ -1,0 +1,13 @@
+server:
+  port: 8090
+
+spring:
+  h2.console.enabled: true
+  h2.console.path: /h2-console
+  datasource.url: jdbc:h2:mem:testdb;IFEXISTS=FALSE
+  datasource.driverClassName: org.h2.Driver
+  datasource.username: sa
+  datasource.password: 
+  jpa.database-platform: org.hibernate.dialect.H2Dialect
+  
+ 

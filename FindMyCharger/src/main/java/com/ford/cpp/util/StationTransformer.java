@@ -31,6 +31,7 @@ public class StationTransformer {
 		 return responseList;
 	}
 	
+	
 	public List<ChargingStation> transformRequest(List<ChargingStationContract> stationContractList)
 	{
 		List<ChargingStation> entityList = new ArrayList<ChargingStation>();

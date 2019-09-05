@@ -16,28 +16,40 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ford.cpp.ChargingStatusDomain;
 import com.ford.cpp.contract.ChargingStationContract;
+import com.ford.cpp.contract.VinChargeStatusContract;
+import com.ford.cpp.contract.VinOwnerContract;
 import com.ford.cpp.entities.ChargingStation;
 import com.ford.cpp.service.ChargingService;
+import com.ford.cpp.service.VehicleService;
 import com.ford.cpp.util.StationTransformer;
+import com.ford.cpp.util.VinTransformer;
 
 @RestController
 public class ChargingController 
 {
 	@Autowired
-	private ChargingService service;
+	private ChargingService chargingService;
+	
+	@Autowired
+	private VehicleService vehicleService;
+	
 	@Autowired
 	private StationTransformer transformer;
+	
+	@Autowired
+	private VinTransformer vinTransformer;
 
 	@GetMapping(value = {"/station","/station/{city}"})
-	public List<ChargingStationContract> getStations(@PathVariable(required=false) String city)
+	public List<ChargingStatusDomain> getStations(@PathVariable(required=false) String city)
 	{
 		System.out.println("Invoked the Get Stations API: "+city);
-		List<ChargingStation> list = service.getStations(city);
+		List<ChargingStatusDomain> list = chargingService.getStationsWithChargeStatus(city);
 		
-		List<ChargingStationContract> responseList = transformer.transformResponse(list);
+		//List<ChargingStationContract> responseList = transformer.transformResponse(list);
 		
-		return responseList;
+		return list;
 	}
 	
 	@RequestMapping(value = "/station", method=RequestMethod.POST)
@@ -45,18 +57,26 @@ public class ChargingController
 	{
 		System.out.println("Invoked the Create Stations API");
 		List<ChargingStation> responseList = transformer.transformRequest(stations);
-		service.createStations(responseList);
+		chargingService.createStations(responseList);
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/station", method=RequestMethod.PUT)
-	public ResponseEntity updateStation(@RequestBody ChargingStationContract station)
+	public ResponseEntity updateStation(@RequestBody VinChargeStatusContract chargeStatus)
 	{
 		System.out.println("Invoked the PUT Stations API");
-		service.updateStatus(transformer.transformRequest(station));
+		vehicleService.updateStatus(vinTransformer.transformRequest(chargeStatus));
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	
+	
+	@RequestMapping(value = "/vinowner", method=RequestMethod.POST)
+	public ResponseEntity registerVIN(@RequestBody VinOwnerContract vinOwner)
+	{
+		System.out.println("Invoked the Register CAR API");
+		vehicleService.registerVIN(vinTransformer.transformRequest(vinOwner));
+		return new ResponseEntity(HttpStatus.OK);
+	}
 //	@PostMapping(path = "/station", consumes="application/json")
 //	public ResponseEntity createStation(@RequestBody ChargingStationContract station)
 //	{

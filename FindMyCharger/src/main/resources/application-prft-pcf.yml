@@ -1,0 +1,5 @@
+spring:
+  jpa.hibernate.ddl-auto: update
+  datasource.url: jdbc:mysql://10.0.76.27:3306/cf_6c0565cf_a5c1_4a7f_9a55_36625be91223?user=rsD3zZtsB2fuADj1&password=tyINJ3Ne0nFPCMt8
+  datasource.username: rsD3zZtsB2fuADj1
+  datasource.password: tyINJ3Ne0nFPCMt8

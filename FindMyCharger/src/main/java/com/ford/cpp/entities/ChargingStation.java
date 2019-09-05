@@ -28,4 +28,5 @@ public class ChargingStation
 	private String city;
 	
 	private String vin;
+	
 }

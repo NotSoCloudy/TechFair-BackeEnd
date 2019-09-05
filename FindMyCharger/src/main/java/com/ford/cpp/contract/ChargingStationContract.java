@@ -25,4 +25,6 @@ public class ChargingStationContract {
 		
 		private String city;
 		
+		private double chargePct;
+		
 }

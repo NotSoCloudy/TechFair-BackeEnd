@@ -1,5 +1,6 @@
 package com.ford.cpp.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -7,37 +8,79 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ford.cpp.ChargingStatusDomain;
 import com.ford.cpp.client.SlackClient;
 import com.ford.cpp.entities.ChargingStation;
-import com.ford.cpp.repository.ChargingRepository;
+import com.ford.cpp.entities.VinChargeStatus;
+import com.ford.cpp.repository.ChargingStationRepository;
+import com.ford.cpp.repository.VinChargerRepository;
 
 @Component
 public class ChargingService {
 	
 	@Autowired
-	private ChargingRepository repo;
+	private ChargingStationRepository repo;
+	
+	@Autowired
+	private VinChargerRepository vinStatusRepo;
 	
 	@Autowired
 	private SlackClient slackClient;
 	
+
 	public List<ChargingStation> getStations(String city)
 	{
-//		ChargingStation station = new ChargingStation();
-//		station.setId(new Long(1));
-//		station.setName("Station 1");
-//		station.setLongitude(2.5);
-//		station.setLatitude(3.7);
-//		station.setStatus(true);
-//		repo.save(station);
+		List<ChargingStation> stationList = new ArrayList<ChargingStation>();
+		
 		if(city.equalsIgnoreCase("all"))
-		return repo.findAll();
+			stationList=  repo.findAll();
 		else
-		{
-			List<ChargingStation> stationList = repo.findAllByCity(city).orElse(Collections.EMPTY_LIST);
-			return stationList;
-		}
+			stationList = repo.findAllByCity(city).orElse(Collections.emptyList());
+		
+		return stationList;
 	}
 	
+	public List<ChargingStatusDomain> getStationsWithChargeStatus(String city)
+	{
+		List<ChargingStation> stationList = getStations(city);
+		List<Long> chargingIdList = new ArrayList<Long>();
+		for(ChargingStation station: stationList) {
+			chargingIdList.add(station.getId());
+		}
+	
+		List<VinChargeStatus> chargingStationStatusList = vinStatusRepo.findAllById(chargingIdList);
+		
+		return aggregateChargerStatus(stationList, chargingStationStatusList);
+	}
+	
+	private List<ChargingStatusDomain> aggregateChargerStatus(List<ChargingStation> stationList,
+			List<VinChargeStatus> chargingStationStatusList) {
+		
+		List<ChargingStatusDomain> domainList = new ArrayList<ChargingStatusDomain>();
+		VinChargeStatus tempStatus= null;
+		ChargingStation tempStation = null;
+		
+		for(int counter=0;counter<stationList.size();counter++)
+		{
+			tempStatus = chargingStationStatusList.get(counter);
+			tempStation = stationList.get(counter);
+			
+			ChargingStatusDomain domain = new ChargingStatusDomain();
+			domain.setChargePct(tempStatus.getChargePct());
+			domain.setChargerId(tempStation.getId());
+			domain.setCity(tempStation.getCity());
+			domain.setLatitude(tempStation.getLatitude());
+			domain.setLongitude(tempStation.getLongitude());
+			domain.setName(tempStation.getName());
+			domain.setStatus(tempStatus.isStatus());
+			domain.setUsageCounter(tempStation.getUsageCounter());
+			domain.setVin(tempStatus.getVin());
+			
+			domainList.add(domain);
+		}
+		return domainList;
+	}
+
 	public void createStations(List<ChargingStation> list)
 	{
 		repo.saveAll(list);
@@ -58,5 +101,6 @@ public class ChargingService {
 		}
 		
 	}
+	
 
 }

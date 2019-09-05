@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import com.ford.cpp.entities.ChargingStation;
 
 @Repository
-public interface ChargingRepository extends JpaRepository<ChargingStation,Long>{
+public interface ChargingStationRepository extends JpaRepository<ChargingStation,Long>{
 	
 	Optional<List<ChargingStation>> findAllByCity(String city); 
 
