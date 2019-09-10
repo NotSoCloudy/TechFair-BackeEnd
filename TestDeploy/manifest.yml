@@ -1,0 +1,5 @@
+applications:
+- name: TestDeploy
+  memory: 512M
+  instances: 1
+  path: ./TestDeploy-0.0.1-SNAPSHOT.jar

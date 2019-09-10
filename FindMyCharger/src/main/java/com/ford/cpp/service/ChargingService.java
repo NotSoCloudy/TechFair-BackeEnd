@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import com.ford.cpp.ChargingStatusDomain;
 import com.ford.cpp.client.SlackClient;
 import com.ford.cpp.entities.ChargingStation;
+import com.ford.cpp.entities.TimeToChargeStaticMap;
 import com.ford.cpp.entities.VinChargeStatus;
 import com.ford.cpp.repository.ChargingStationRepository;
 import com.ford.cpp.repository.VinChargerRepository;
@@ -47,8 +48,10 @@ public class ChargingService {
 		for(ChargingStation station: stationList) {
 			chargingIdList.add(station.getId());
 		}
+		
+	//	System.out.println(" --- >>>> chargingIdList: "+chargingIdList);
 	
-		List<VinChargeStatus> chargingStationStatusList = vinStatusRepo.findAllById(chargingIdList);
+		List<VinChargeStatus> chargingStationStatusList = vinStatusRepo.findAllByChargerIdIn(chargingIdList).orElse(Collections.emptyList());
 		
 		return aggregateChargerStatus(stationList, chargingStationStatusList);
 	}
@@ -56,6 +59,7 @@ public class ChargingService {
 	private List<ChargingStatusDomain> aggregateChargerStatus(List<ChargingStation> stationList,
 			List<VinChargeStatus> chargingStationStatusList) {
 		
+	//	System.out.println(" --- >>>> stationList: "+stationList+" --- Charging Station List: "+chargingStationStatusList);
 		List<ChargingStatusDomain> domainList = new ArrayList<ChargingStatusDomain>();
 		VinChargeStatus tempStatus= null;
 		ChargingStation tempStation = null;
@@ -75,7 +79,7 @@ public class ChargingService {
 			domain.setStatus(tempStatus.isStatus());
 			domain.setUsageCounter(tempStation.getUsageCounter());
 			domain.setVin(tempStatus.getVin());
-			
+			domain.setTimeToFullyCharge((Double)TimeToChargeStaticMap.TIME_TO_CHARGE_MAP.get(tempStatus.getChargePct()));
 			domainList.add(domain);
 		}
 		return domainList;

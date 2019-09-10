@@ -57,4 +57,11 @@ public class VehicleService {
 		if(owner!=null)
 		vehicleRepo.save(owner);
 	}
+	
+	public void deleteAllStations()
+	{
+		chargingRepo.deleteAll();
+		vinChargerRepo.deleteAll();
+		vehicleRepo.deleteAll();
+	}
 }

@@ -16,7 +16,7 @@ public interface VinChargerRepository extends JpaRepository <VinChargeStatus, Lo
 	Optional<VinChargeStatus> findByVin(String vin); 
 	Optional<VinChargeStatus> findByChargerId(Long id); 
 //	Optional<List<VinChargeStatus>> findAllByChargerIdIn(List<Long> idList); 
-	Optional<List<VinChargeStatus>> findAllByChargerIdIn(Set<Long> idList);
+	Optional<List<VinChargeStatus>> findAllByChargerIdIn(List<Long> idList);
 	
 
 }

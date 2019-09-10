@@ -18,27 +18,7 @@ public class VinChargeStatus {
 	private Long chargerId;
 	private double chargePct;
 	private boolean status;
-	
-	
-	public String getVin() {
-		return vin;
-	}
-	public void setVin(String vin) {
-		this.vin = vin;
-	}
-	public Long getChargerId() {
-		return chargerId;
-	}
-	public void setChargerId(Long chargerId) {
-		this.chargerId = chargerId;
-	}
-	public double getChargePct() {
-		return chargePct;
-	}
-	public void setChargePct(double chargePct) {
-		this.chargePct = chargePct;
-	}
-	
+	private Double timeToFullyCharge;	
 	
 	public boolean isStatus() {
 		return status;
@@ -46,7 +26,5 @@ public class VinChargeStatus {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
-	
 
 }

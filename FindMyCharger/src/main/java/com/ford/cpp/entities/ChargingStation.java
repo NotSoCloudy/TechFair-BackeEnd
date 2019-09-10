@@ -14,19 +14,11 @@ public class ChargingStation
 {
 	@Id
 	private Long id;
-	
 	private String name;
-	
 	private boolean status;
-	
 	private double latitude;
-	
 	private double longitude;
-	
 	private int usageCounter;
-	
 	private String city;
-	
 	private String vin;
-	
 }

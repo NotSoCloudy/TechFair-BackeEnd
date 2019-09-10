@@ -19,5 +19,6 @@ public class ChargingStatusDomain {
 	private Long chargerId;
 	private double chargePct;
 	private boolean status;
+	private double timeToFullyCharge;
 	
 }

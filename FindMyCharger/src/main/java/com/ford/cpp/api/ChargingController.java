@@ -1,6 +1,5 @@
 package com.ford.cpp.api;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ford.cpp.ChargingStatusDomain;
@@ -31,13 +27,10 @@ public class ChargingController
 {
 	@Autowired
 	private ChargingService chargingService;
-	
 	@Autowired
 	private VehicleService vehicleService;
-	
 	@Autowired
 	private StationTransformer transformer;
-	
 	@Autowired
 	private VinTransformer vinTransformer;
 
@@ -66,6 +59,14 @@ public class ChargingController
 	{
 		System.out.println("Invoked the PUT Stations API");
 		vehicleService.updateStatus(vinTransformer.transformRequest(chargeStatus));
+		return new ResponseEntity(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/station", method=RequestMethod.DELETE)
+	public ResponseEntity deleteStation()
+	{
+		System.out.println("Invoked the DELETE ALL Stations API");
+		vehicleService.deleteAllStations();
 		return new ResponseEntity(HttpStatus.OK);
 	}
 	

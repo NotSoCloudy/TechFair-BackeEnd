@@ -12,19 +12,11 @@ import lombok.NoArgsConstructor;
 public class ChargingStationContract {
 
 		private String name;
-		
 		private Long id;
-		
 		private boolean status;
-		
 		private double latitude;
-		
 		private double longitude;
-		
 		private int usageCounter;
-		
 		private String city;
-		
 		private double chargePct;
-		
 }
