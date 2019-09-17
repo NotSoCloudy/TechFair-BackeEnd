@@ -1,5 +1,13 @@
 package com.ford.cpp.service;
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +37,7 @@ public class VehicleService {
 	{
 		ChargingStation stn= chargingRepo.findById(chargeStatus.getChargerId()).orElse(new ChargingStation());
 		stn.setUsageCounter(stn.getUsageCounter()+1);
+		stn.setStatus(chargeStatus.isStatus());
 		
 		chargingRepo.save(stn);
 		
@@ -36,18 +45,31 @@ public class VehicleService {
 		status.setVin(chargeStatus.getVin());
 		status.setChargePct(chargeStatus.getChargePct());
 		status.setChargerId(chargeStatus.getChargerId());
+		status.setStatus(chargeStatus.isStatus());
 		
 		vinChargerRepo.save(status);
 		
 		VinOwner owner = vehicleRepo.findByVin(chargeStatus.getVin()).orElse(new VinOwner());
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss");
+		 
+		LocalDateTime today = LocalDateTime.now();
+
+		ZoneId id = ZoneId.of("America/Detroit");
+		ZonedDateTime zonedDateTime = ZonedDateTime.of(today, id).minusHours(4);      //That's how you add timezone to date
+		 
+		String formattedDateTime = DateTimeFormatter
+		                            .ofPattern("MM-dd-yyyy hh:mm a")
+		                            .format(zonedDateTime);         
+		
+
 		
 	   if(chargeStatus.isStatus())
 		{
-		   slackClient.postMessage("Charger "+stn.getName()+" is now available."+owner.getOwner()+" unplugged just now");
+		   slackClient.postMessage("Charger *"+stn.getName()+"* is now *AVAILABLE*. "+owner.getOwner()+" unplugged at: "+formattedDateTime);
 		}
 		else
 		{
-			slackClient.postMessage("Charger "+stn.getName()+" is now in use."+owner.getOwner()+" plugged in just now");			
+			slackClient.postMessage("Charger *"+stn.getName()+"* is now *IN USE*. "+owner.getOwner()+" plugged in at: "+formattedDateTime);			
 		}
 		
 	}
@@ -64,4 +86,5 @@ public class VehicleService {
 		vinChargerRepo.deleteAll();
 		vehicleRepo.deleteAll();
 	}
+	
 }

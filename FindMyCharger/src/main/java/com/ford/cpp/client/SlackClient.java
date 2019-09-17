@@ -10,10 +10,11 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 public class SlackClient {
-		
-	public static final String url = null; 
-	public static final String token = null; 
 	
+	
+//	public static final String url = null; 
+//	public static final String token = null; 
+//	
 	
 	public void postMessage(String msg)
 	{

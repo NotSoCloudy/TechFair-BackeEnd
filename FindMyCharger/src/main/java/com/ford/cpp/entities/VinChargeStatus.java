@@ -17,7 +17,7 @@ public class VinChargeStatus {
 	private String vin;
 	private Long chargerId;
 	private double chargePct;
-	private boolean status;
+	private boolean status=true;
 	private Double timeToFullyCharge;	
 	
 	public boolean isStatus() {

@@ -2,6 +2,7 @@ package com.ford.cpp.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,12 +53,17 @@ public class ChargingService {
 	//	System.out.println(" --- >>>> chargingIdList: "+chargingIdList);
 	
 		List<VinChargeStatus> chargingStationStatusList = vinStatusRepo.findAllByChargerIdIn(chargingIdList).orElse(Collections.emptyList());
+		HashMap<Long,VinChargeStatus> statusMap = new HashMap<Long,VinChargeStatus>();
 		
-		return aggregateChargerStatus(stationList, chargingStationStatusList);
+		for(VinChargeStatus status:chargingStationStatusList)
+		{
+			statusMap.put(status.getChargerId(), status);
+		}
+		return aggregateChargerStatus(stationList, statusMap);
 	}
 	
 	private List<ChargingStatusDomain> aggregateChargerStatus(List<ChargingStation> stationList,
-			List<VinChargeStatus> chargingStationStatusList) {
+			HashMap<Long,VinChargeStatus> statusMap) {
 		
 	//	System.out.println(" --- >>>> stationList: "+stationList+" --- Charging Station List: "+chargingStationStatusList);
 		List<ChargingStatusDomain> domainList = new ArrayList<ChargingStatusDomain>();
@@ -66,8 +72,9 @@ public class ChargingService {
 		
 		for(int counter=0;counter<stationList.size();counter++)
 		{
-			tempStatus = chargingStationStatusList.get(counter);
+			
 			tempStation = stationList.get(counter);
+			tempStatus = (statusMap.get(tempStation.getId())==null)?( new VinChargeStatus()):(statusMap.get(tempStation.getId()));
 			
 			ChargingStatusDomain domain = new ChargingStatusDomain();
 			domain.setChargePct(tempStatus.getChargePct());
@@ -76,7 +83,7 @@ public class ChargingService {
 			domain.setLatitude(tempStation.getLatitude());
 			domain.setLongitude(tempStation.getLongitude());
 			domain.setName(tempStation.getName());
-			domain.setStatus(tempStatus.isStatus());
+			domain.setStatus(tempStation.isStatus());
 			domain.setUsageCounter(tempStation.getUsageCounter());
 			domain.setVin(tempStatus.getVin());
 			domain.setTimeToFullyCharge((Double)TimeToChargeStaticMap.TIME_TO_CHARGE_MAP.get(tempStatus.getChargePct()));
